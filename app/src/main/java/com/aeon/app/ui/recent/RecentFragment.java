@@ -58,11 +58,5 @@ public class RecentFragment extends Fragment {
     public void onResume() {
         super.onResume();
         MainActivity.showUI();
-        MainActivity.button_transfer.setTextAppearance(R.style.Button_Unselected);
-        MainActivity.button_contacts.setTextAppearance(R.style.Button_Unselected);
-        MainActivity.button_recents.setTextAppearance(R.style.Button_Selected);
-        MainActivity.image_transfer.setVisibility(View.GONE);
-        MainActivity.image_contacts.setVisibility(View.GONE);
-        MainActivity.image_recents.setVisibility(View.VISIBLE);
     }
 }

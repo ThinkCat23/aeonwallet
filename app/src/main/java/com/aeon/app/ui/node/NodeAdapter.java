@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aeon.app.MainActivity;
 import com.aeon.app.R;
 
 import java.util.List;
@@ -49,11 +50,10 @@ public class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.ViewHolder> {
         holder.mContentView.setText(mValues.get(position).content);
         if(summarize){
             holder.mIdView.setVisibility(View.GONE);
-            if(!(holder.mItem.id.equals("Domain") ||
-                    holder.mItem.id.equals("") ||
-                    holder.mItem.id.equals("IP Address") ||
-                    holder.mItem.id.equals("Height")||
-                    holder.mItem.id.equals("Status"))) {
+            if(!(holder.mItem.id.equals("") ||
+                    holder.mItem.id.equals(MainActivity.getString("row_node_address")) ||
+                    holder.mItem.id.equals(MainActivity.getString("row_node_height"))||
+                    holder.mItem.id.equals(MainActivity.getString("row_node_status")))) {
                 holder.itemView.setVisibility(View.GONE);
             }
         }

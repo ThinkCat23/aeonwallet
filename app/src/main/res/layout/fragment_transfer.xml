@@ -5,10 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
+
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_transfer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/layout_transfer">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_onboard"
@@ -21,70 +22,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="
-            rv_wallet_info_list,
-            transfer_recipient_info,
-            transfer_amount_info,
-            transfer_amount_info_label,floating_button_send,textView" />
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="-8dp"
-            android:layout_marginEnd="16dp"
-            android:scaleY="1.125"
-            app:layout_constraintBottom_toBottomOf="@+id/transfer_amount_info"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/transfer_recipient_info"
-            app:srcCompat="@drawable/corners" />
-
-        <EditText
-            android:id="@+id/transfer_recipient_info"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:gravity="start|top"
-            android:hint="@string/text_recipient_address"
-            android:inputType="textVisiblePassword|textMultiLine"
-            android:padding="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-        <EditText
-            android:id="@+id/transfer_amount_info"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            android:hint="@string/text_amount"
-            android:inputType="numberDecimal"
-            android:padding="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/transfer_amount_info_label"
-            app:layout_constraintTop_toBottomOf="@+id/transfer_recipient_info" />
-
-        <include
-            android:id="@+id/rv_wallet_info_list"
-            layout="@layout/layout_wallet_list"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            text_available,text_balance,text_node,
+            button_receive,button_send,
+            text_label_aeon_news,
+            rv_blog_list" />
 
         <TextView
             android:id="@+id/text_onboard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
             android:fontFamily="sans-serif"
             android:text="@string/text_open_a_wallet_to_begin"
             android:textColor="@color/gray"
@@ -95,41 +43,126 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <ImageView
-            android:id="@+id/transfer_amount_info_label"
-            android:layout_width="30dp"
-            android:layout_height="31dp"
-            android:layout_marginStart="24dp"
-            android:src="@drawable/ic_aeon_logo"
-            app:layout_constraintBottom_toBottomOf="@+id/transfer_amount_info"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/transfer_amount_info"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floating_button_send"
-            style="@style/Button.On"
+        <TextView
+            android:id="@+id/text_label_aeon_news"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="32dp"
-            android:clickable="true"
-            android:onClick="createTransaction"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/lindsaybecker"
+            android:text="@string/title_aeon_news"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_send" />
+
+        <include
+            android:id="@+id/rv_blog_list"
+            layout="@layout/layout_blog_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_send_on" />
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_label_aeon_news" />
+
 
         <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
+            android:id="@+id/text_available"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/title_send_aeon"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="marquee"
+            android:focusable="auto"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:textAlignment="textEnd"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textIsSelectable="true"
+            android:textSize="30sp"
+            android:typeface="monospace"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rv_wallet_info_list" />
+            app:layout_constraintTop_toBottomOf="@+id/text_balance" />
 
+
+        <TextView
+            android:id="@+id/text_balance"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="marquee"
+            android:focusable="auto"
+            android:fontFamily="@font/lindsaybecker"
+            android:gravity="center_vertical|end"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:textAlignment="textEnd"
+            android:textIsSelectable="true"
+            android:textSize="14sp"
+            android:typeface="normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_node"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/lindsaybecker"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textAlignment="center"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/button_send"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
+            android:onClick="goToSendFragment"
+            android:padding="16dp"
+            android:text="@string/title_send"
+            app:layout_constraintEnd_toStartOf="@+id/button_receive"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_available" />
+
+        <Button
+            android:id="@+id/button_receive"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:onClick="goToReceiveFragment"
+            android:padding="16dp"
+            android:text="@string/title_receive"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button_send"
+            app:layout_constraintTop_toBottomOf="@+id/text_available" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aeon.app.MainActivity;
 import com.aeon.app.R;
 
 import java.util.List;
@@ -51,19 +52,23 @@ public class WalletAdapter extends RecyclerView.Adapter<WalletAdapter.ViewHolder
         holder.mContentView.setText(mValues.get(position).content);
         if(summarize){
             if(!(holder.mItem.id.equals("") ||
-                    holder.mItem.id.equals("Receiving Address")||
-                    holder.mItem.id.equals("Balance Total")||
-                    holder.mItem.id.equals("Balance Spendable"))) {
+                    holder.mItem.id.equals(MainActivity.getString("row_wallet_address"))||
+                    holder.mItem.id.equals(MainActivity.getString("row_wallet_balance_total"))||
+                    holder.mItem.id.equals(MainActivity.getString("row_wallet_balance_spendable")))) {
                 holder.itemView.setVisibility(View.GONE);
                 holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
             }
         } else if (secretInfo){
-            if(holder.mItem.id.equals("Seed")||holder.mItem.id.equals("Secret Spend Key")||holder.mItem.id.equals("Secret View Key")) {
+            if(holder.mItem.id.equals(MainActivity.getString("row_wallet_seed"))
+                    ||holder.mItem.id.equals(MainActivity.getString("row_wallet_secret_spend_key"))
+                    ||holder.mItem.id.equals(MainActivity.getString("row_wallet_secret_view_key"))) {
                 holder.itemView.setVisibility(View.VISIBLE);
                 holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             }
         } else if (!secretInfo){
-            if(holder.mItem.id.equals("Seed")||holder.mItem.id.equals("Secret Spend Key")||holder.mItem.id.equals("Secret View Key")) {
+            if(holder.mItem.id.equals(MainActivity.getString("row_wallet_seed"))
+                    ||holder.mItem.id.equals(MainActivity.getString("row_wallet_secret_spend_key"))
+                    ||holder.mItem.id.equals(MainActivity.getString("row_wallet_secret_view_key"))) {
                 holder.itemView.setVisibility(View.GONE);
                 holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
             }

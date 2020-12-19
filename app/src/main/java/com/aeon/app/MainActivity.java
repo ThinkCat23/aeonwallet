@@ -19,13 +19,19 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.aeon.app.models.Node;
 import com.aeon.app.ui.contact.ContactContent;
 import com.aeon.app.ui.wallet.WalletContent;
 
@@ -36,6 +42,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.util.Set;
+
 public class MainActivity extends ButtonActions {
     public static ConstraintLayout layout_bottom_nav;
     public static Group group_main_on;
@@ -45,9 +53,6 @@ public class MainActivity extends ButtonActions {
     public static Button button_transfer;
     public static Button button_contacts;
     public static Button button_recents;
-    public static ImageView image_transfer;
-    public static ImageView image_recents;
-    public static ImageView image_contacts;
     public static Resources res;
     public static String packageName;
 
@@ -55,28 +60,26 @@ public class MainActivity extends ButtonActions {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         getSupportActionBar().setElevation(0);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_transfer, R.id.navigation_contact, R.id.navigation_recent)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        
+
+
         group_main_on = findViewById(R.id.group_main_on);
         group_main_off = findViewById(R.id.group_main_off);
         layout_bottom_nav = MainActivity.this.findViewById(R.id.layout_bottom_nav);
         button_transfer = ((Button) findViewById(R.id.button_transfer));
         button_contacts =((Button) findViewById(R.id.button_contacts));
         button_recents =((Button) findViewById(R.id.button_recents));
-        image_transfer = findViewById(R.id.image_transfer);
-        image_recents = findViewById(R.id.image_recents);
-        image_contacts = findViewById(R.id.image_contacts);
         res = getResources();
         packageName = getPackageName();
 
         loadContacts();
         loadSavedWallet();
+        loadSavedNode();
 
         if(BackgroundThread.isManaging){
             group_main_on.setVisibility(View.VISIBLE);
@@ -118,11 +121,12 @@ public class MainActivity extends ButtonActions {
     }
     private void loadContacts(){
         SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
-        for(String key : sharedPref.getAll().keySet()){
-            if(!key.equals("path")&&!key.equals("password") ){
-                if(!ContactContent.ITEMS.contains(sharedPref.getString(key , ""))) {
+        final Set<String> keys = sharedPref.getAll().keySet();
+        for(String key : keys){
+            if(!key.equals("path")&&!key.equals("password")&&!key.equals("ip")&&!key.equals("port") ){
+                if(!ContactContent.ITEMS.contains(key)) {
                     ContactContent.addItem(
-                            new ContactContent.Contact(sharedPref.getString(key , ""), key)
+                            new ContactContent.Contact(sharedPref.getString(key, ""), key)
                     );
                 }
             }
@@ -133,14 +137,24 @@ public class MainActivity extends ButtonActions {
         String path = sharedPref.getString("path" , null);
         this.password = sharedPref.getString("password" , null);
         if(!BackgroundThread.isManaging && path != null){
+            Toast toast = Toast.makeText(getApplicationContext(), getString("toast_wallet_found"), Toast.LENGTH_SHORT);
+            toast.show();
             thread = new BackgroundThread();
             thread.start();
             WalletContent.clearItems();
             WalletContent.addItem(
                     new WalletContent.Item("",
-                    getResources().getString(R.string.text_loading_wallet))
+                            getResources().getString(R.string.text_loading_wallet))
             );
             BackgroundThread.queueWallet(path);
+        }
+    }
+    private void loadSavedNode(){
+        SharedPreferences sharedPref = MainActivity.this.getPreferences(Context.MODE_PRIVATE);
+        String ip = sharedPref.getString("ip" , null);
+        String port = sharedPref.getString("port" , null);
+        if(ip != null){
+            BackgroundThread.setNode(new Node(ip,port));
         }
     }
     @Override
@@ -164,11 +178,13 @@ public class MainActivity extends ButtonActions {
         } else {
             editor.putString("path", null);
         }
-        for(ContactContent.Contact c : ContactContent.ITEMS){
-            editor.putString(c.address, c.name);
+        if(BackgroundThread.isConnected){
+            editor.putString("ip", BackgroundThread.node.hostAddress);
+            editor.putString("port", BackgroundThread.node.hostPort);
         }
         editor.commit();
     }
+
 
     public static String getString(String idName) {
         int resId = res.getIdentifier(idName, "string", packageName);

@@ -4,7 +4,7 @@
 set -e
 
 source script/env.sh
-
+mkdir -p $EXTERNAL_LIBS_BUILD_ROOT
 cd $EXTERNAL_LIBS_BUILD_ROOT
 
 version=1.0.16

@@ -22,9 +22,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.InputType;
+import android.text.method.DigitsKeyListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.aeon.app.MainActivity;
 import com.aeon.app.R;
@@ -52,6 +55,10 @@ public class NodeFragment extends Fragment {
         rv.setLayoutManager(new GridLayoutManager(context, 1));
         nodeAdapter = new NodeAdapter(NodeContent.ITEMS);
         rv.setAdapter(nodeAdapter);
+        EditText editText = view.findViewById(R.id.text_node_address);
+        String digits = "0123456789.:";
+        editText.setKeyListener(DigitsKeyListener.getInstance(digits));
+        editText.setRawInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
         return view;
     }
 

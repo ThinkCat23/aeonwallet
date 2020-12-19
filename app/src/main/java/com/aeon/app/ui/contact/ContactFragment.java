@@ -15,16 +15,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+import android.app.ListActivity;
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.aeon.app.MainActivity;
 import com.aeon.app.R;
@@ -33,7 +36,7 @@ import com.aeon.app.R;
  * A fragment representing a list of Items.
  */
 public class ContactFragment extends Fragment {
-    public static ContactAdapter contactAdapter;
+    public static ContactAdapter contactAdapter = null;
 
     public ContactFragment() {
     }
@@ -50,8 +53,30 @@ public class ContactFragment extends Fragment {
 
         Context context = view.getContext();
         RecyclerView rv = view.findViewById(R.id.rv_contact_item_list);
+        //https://stackoverflow.com/a/40374244
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT ) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                //Remove swiped item from list and notify the RecyclerView
+                int position = viewHolder.getAdapterPosition();
+                String address = ContactContent.ITEMS.get(position).address;
+                ContactContent.deleteItem(position);
+                contactAdapter.notifyDataSetChanged();
+                MainActivity.deletePreference(address,getActivity().getSharedPreferences("MainActivity",Context.MODE_PRIVATE));
+            }
+        };
         rv.setLayoutManager(new GridLayoutManager(context, 1));
-        contactAdapter = new ContactAdapter(ContactContent.ITEMS);
+        if(contactAdapter ==null) {
+            contactAdapter = new ContactAdapter(ContactContent.ITEMS);
+        }
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(rv);
         rv.setAdapter(contactAdapter);
         return view;
     }
@@ -60,11 +85,5 @@ public class ContactFragment extends Fragment {
     public void onResume() {
         super.onResume();
         MainActivity.showUI();
-        MainActivity.button_transfer.setTextAppearance(R.style.Button_Unselected);
-        MainActivity.button_contacts.setTextAppearance(R.style.Button_Selected);
-        MainActivity.button_recents.setTextAppearance(R.style.Button_Unselected);
-        MainActivity.image_transfer.setVisibility(View.GONE);
-        MainActivity.image_contacts.setVisibility(View.VISIBLE);
-        MainActivity.image_recents.setVisibility(View.GONE);
     }
 }

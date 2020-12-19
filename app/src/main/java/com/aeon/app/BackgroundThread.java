@@ -15,6 +15,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.aeon.app.models.Node;
@@ -23,12 +25,13 @@ import com.aeon.app.models.TransactionPending;
 import com.aeon.app.models.Wallet;
 import com.aeon.app.ui.node.NodeContent;
 import com.aeon.app.ui.recent.RecentContent;
+import com.aeon.app.ui.transfer.ReceiveFragment;
+import com.aeon.app.ui.transfer.TransferFragment;
 import com.aeon.app.ui.wallet.WalletContent;
 
 public class BackgroundThread extends Thread{
     private static final String TAG = "BackgroundThread";
     private int sleepCount = 0;
-    private static Node node;
     private static Wallet wallet = null;
     private static boolean isNodeChanged;
     public static boolean isRunning = false;
@@ -36,6 +39,8 @@ public class BackgroundThread extends Thread{
     public static boolean isConnected = false;
     public static boolean isShownNewWalletFragment = false;
     public static TransactionPending pendingTransaction = null;
+    public static Node node;
+    public static long height;
     public static String path = null;
     public static String seed = null;
     public BackgroundThread() {
@@ -46,9 +51,7 @@ public class BackgroundThread extends Thread{
         isRunning = true;
         Log.v(TAG, "isRunning");
         while(!Thread.interrupted()){
-            Log.v(TAG, "!Thread.interrupted()");
             if(isManaging && ! wallet.isClosed) {
-                Log.v(TAG, "isManaging && !wallet.isClosed");
                 if (wallet.isExists == false) {
                     Log.v(TAG, "!wallet.isExists");
                     wallet.create();
@@ -58,7 +61,6 @@ public class BackgroundThread extends Thread{
                     connectToNode();
                     init();
                 } else {
-                    Log.v(TAG, "wallet.isExists && wallet.isInit");
                     if(sleepCount==300){
                         sleepCount = 0;
                         updateTransactions();
@@ -66,12 +68,11 @@ public class BackgroundThread extends Thread{
                     if(sleepCount%100==0) {
                         refreshWalletInfo();
                         refreshNode();
+                        clearTransactionQueue();
                     }
-                    clearTransactionQueue();
                 }
             }
             try {
-                Log.v(TAG, "Thread.sleep");
                 Thread.sleep(100);
                 sleepCount++;
             } catch (InterruptedException e) {
@@ -97,7 +98,7 @@ public class BackgroundThread extends Thread{
         wallet = new Wallet(path,MainActivity.getPassword(),"English");
         isManaging = true;
     }
-    public static void queueWallet(String path, String seed, int restoreHeight){
+    public static void queueWallet(String path, String seed, long restoreHeight){
         Log.v(TAG, "queueWallet");
         BackgroundThread.path = path;
         BackgroundThread.seed = null;
@@ -105,7 +106,7 @@ public class BackgroundThread extends Thread{
         isManaging = true;
     }
 
-    public static void queueWallet(String path, String account, String view, String spend, int restoreHeight) {
+    public static void queueWallet(String path, String account, String view, String spend, long restoreHeight) {
         Log.v(TAG, "queueWallet");
         BackgroundThread.path = path;
         BackgroundThread.seed = null;
@@ -117,9 +118,21 @@ public class BackgroundThread extends Thread{
         Log.v(TAG, "queueTransaction");
         pendingTransaction = new TransactionPending(dst_address,amount);
     }
+    public static void queueTransaction(String dst_address, long amount, String paymentID){
+        Log.v(TAG, "queueTransaction");
+        pendingTransaction = new TransactionPending(dst_address,amount,paymentID);
+    }
     public static void confirmTransaction(){
         Log.v(TAG, "confirmTransaction");
-        pendingTransaction.isConfirmedByUser = true;
+        if(pendingTransaction!=null) {
+            pendingTransaction.isConfirmedByUser = true;
+        }
+    }
+    public static void disposeTransaction(){
+        if(pendingTransaction!=null) {
+            Log.v(TAG, "disposeTransaction");
+            pendingTransaction.isDisposedByUser = true;
+        }
     }
 
     public static void setAddressIndex(int index){
@@ -133,15 +146,24 @@ public class BackgroundThread extends Thread{
         BackgroundThread.node = node;
         isNodeChanged = true;
     }
+    public static void setNode() {
+        Log.v(TAG, "setNode");
+        if(BackgroundThread.node==null){
+            setNode(Node.pickRandom());
+        } else {
+            setNode(Node.pickRandom(BackgroundThread.node.hostAddress));
+        }
+    }
 
     private void clearTransactionQueue(){
-        Log.v(TAG, "clearTransactionQueue");
         if(pendingTransaction == null){
             return;
         } else if(!pendingTransaction.isCreated){
+            Log.v(TAG, "clearTransactionQueue");
             pendingTransaction.setHandle(wallet.createTransaction(pendingTransaction));
             pendingTransaction.isCreated = true;
         } else if(pendingTransaction.isConfirmedByUser) {
+            Log.v(TAG, "clearTransactionQueue");
             pendingTransaction.commit();
             pendingTransaction.refresh();
             switch (pendingTransaction.status) {
@@ -153,6 +175,9 @@ public class BackgroundThread extends Thread{
                     break;
                 default:
             }
+        } else if (pendingTransaction.isDisposedByUser && !pendingTransaction.isConfirmedByUser) {
+            wallet.disposeTransaction(pendingTransaction);
+            pendingTransaction = null;
         } else {
             pendingTransaction.refresh();
         }
@@ -177,15 +202,28 @@ public class BackgroundThread extends Thread{
         WalletContent.addItem(new WalletContent.Item(MainActivity.getString("row_wallet_balance_total"), MainActivity.getString("text_unknown")));
         WalletContent.addItem(new WalletContent.Item(MainActivity.getString("row_wallet_balance_spendable"), MainActivity.getString("text_unknown")));
         WalletContent.addItem(new WalletContent.Item(MainActivity.getString("row_wallet_synchronized"), String.valueOf(wallet.isSynchronized)));
+        WalletContent.addItem(new WalletContent.Item(MainActivity.getString("row_wallet_synchronized_height"), String.valueOf(wallet.height)));
         WalletContent.addItem(new WalletContent.Item(MainActivity.getString("row_wallet_status"), String.valueOf(wallet.status)));
         WalletContent.addItem(new WalletContent.Item(MainActivity.getString("row_wallet_path"), wallet.path));
         WalletContent.addItem(new WalletContent.Item(MainActivity.getString("row_wallet_transaction_count"), MainActivity.getString("text_unknown")));
+        WalletContent.addItem(new WalletContent.Item(MainActivity.getString("row_wallet_restore_height"),String.valueOf(wallet.restoreHeight)));
         WalletContent.addItem(new WalletContent.Item(MainActivity.getString("row_wallet_public_spend_key"), wallet.publicSpendKey));
         WalletContent.addItem(new WalletContent.Item(MainActivity.getString("row_wallet_public_view_key"), wallet.publicViewKey));
         WalletContent.addItem(new WalletContent.Item(MainActivity.getString("row_wallet_seed"), wallet.seed));
         WalletContent.addItem(new WalletContent.Item(MainActivity.getString("row_wallet_secret_spend_key"), wallet.secretSpendKey));
         WalletContent.addItem(new WalletContent.Item(MainActivity.getString("row_wallet_secret_view_key"), wallet.secretViewKey));
-        NodeContent.updateItem(MainActivity.getString("row_node_version"),String.valueOf(wallet.node.version));
+        if(wallet.node!=null && wallet.node.version!=-1) {
+            NodeContent.updateItem(MainActivity.getString("row_node_version"), String.valueOf(wallet.node.version));
+        }
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                TransferFragment.updateWalletInfo(MainActivity.getString("text_unknown"),"");
+                ReceiveFragment.updateAddress(MainActivity.getString("text_unknown"));
+            }
+        });
+
     }
     private void connectToNode(){
         Log.v(TAG, "connectToNode");
@@ -213,9 +251,20 @@ public class BackgroundThread extends Thread{
         WalletContent.updateItem(MainActivity.getString("row_wallet_balance_spendable"), wallet.unlockedBalance.toPlainString());
         WalletContent.updateItem(MainActivity.getString("row_wallet_synchronized"), String.valueOf(wallet.isSynchronized));
         WalletContent.updateItem(MainActivity.getString("row_wallet_status"), String.valueOf(wallet.status));
+        WalletContent.updateItem(MainActivity.getString("row_wallet_synchronized_height"), String.valueOf(wallet.height));
+        WalletContent.updateItem(MainActivity.getString("row_wallet_restore_height"), String.valueOf(wallet.restoreHeight));
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                TransferFragment.updateWalletInfo(wallet.unlockedBalance.toPlainString(),wallet.balance.toPlainString());
+                ReceiveFragment.updateAddress(wallet.address);
+            }
+        });
     }
     public void refreshNode(){
         Log.v(TAG, "refreshNode");
+        this.height=wallet.node.height;
         NodeContent.updateItem(MainActivity.getString("row_node_height"),String.valueOf(wallet.node.height));
         NodeContent.updateItem(MainActivity.getString("row_node_target"),String.valueOf(wallet.node.target));
         NodeContent.updateItem(MainActivity.getString("row_node_status"),String.valueOf(wallet.connectionStatus));
@@ -223,9 +272,17 @@ public class BackgroundThread extends Thread{
         if(isNodeChanged){
             isConnected = false;
             wallet.setNode(BackgroundThread.node);
+            isNodeChanged=false;
             NodeContent.updateItem(MainActivity.getString("row_node_address"), BackgroundThread.node.hostAddress+":"+ BackgroundThread.node.hostPort);
         } else if (wallet.connectionStatus == Wallet.ConnectionStatus.Connected){
             isConnected = true;
         }
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                TransferFragment.updateNodeInfo(String.valueOf(wallet.node.height),String.valueOf(wallet.node.hostAddress));
+            }
+        });
     }
 }

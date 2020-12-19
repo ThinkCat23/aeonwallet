@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author: m2049r https://github.com/m2049r/xmrwallet
-# Aeon adaption: ivoryguru https://github.com/ivoryguru/yottawallet
+# Aeon adaption: ivoryguru https://github.com/ivoryguru/aeonwallet
 
 set -e
 

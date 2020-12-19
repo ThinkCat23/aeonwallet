@@ -22,59 +22,98 @@
     <string name="row_node_target">Target</string>
     <string name="row_node_version">Version</string>
     <string name="row_wallet_account">Account</string>
-    <string name="row_wallet_address">Receiving Address</string>
-    <string name="row_wallet_balance_total">Balance Total</string>
-    <string name="row_wallet_balance_spendable">Balance Spendable</string>
+    <string name="row_wallet_address">Address</string>
+    <string name="row_wallet_balance_total">Coins</string>
+    <string name="row_wallet_balance_spendable">Available</string>
     <string name="row_wallet_index">Index</string>
     <string name="row_wallet_name">Name</string>
     <string name="row_wallet_path">Path</string>
     <string name="row_wallet_public_spend_key">Public Spend Key</string>
     <string name="row_wallet_public_view_key">Public View Key</string>
+    <string name="row_wallet_restore_height">Restore Height</string>
     <string name="row_wallet_seed">Seed</string>
     <string name="row_wallet_secret_spend_key">Secret Spend Key</string>
     <string name="row_wallet_secret_view_key">Secret View Key</string>
     <string name="row_wallet_status">Status</string>
     <string name="row_wallet_synchronized">Synchronized</string>
+    <string name="row_wallet_synchronized_height">Synchronized Height</string>
     <string name="row_wallet_transaction_count">Transaction Count</string>
+    <string name="title_aeon_news">Aeon Community Updates</string>
     <string name="title_contacts">Contacts</string>
-    <string name="title_home">Home</string>
     <string name="title_mnemonic_seed_phrase">Mnemonic Seed Phrase</string>
     <string name="title_new_wallet">New Wallet</string>
     <string name="title_node">Node</string>
+    <string name="title_receive">Receive</string>
     <string name="title_recents">Recents</string>
-    <string name="title_send_aeon">Send Aeon</string>
-    <string name="title_terms_of_use">Terms Of Use</string>
+    <string name="title_send">Send</string>
+    <string name="title_send_aeon">Send Coins</string>
     <string name="title_transaction_pending">Pending Transaction</string>
     <string name="title_transfer">Transfer</string>
     <string name="title_wallet">Wallet</string>
     <string name="text_unknown">...</string>
     <string name="text_account_address">Account address</string>
     <string name="text_amount">Amount</string>
-    <string name="text_confirm_password">Confirm Password</string>
+    <string name="text_confirm_pin">Confirm Phone PIN</string>
+    <string name="text_connected_to">Connected to </string>
+    <string name="text_connecting_to_aeon_network">Connecting to Aeon network...</string>
     <string name="text_contact_hint_name">Contact Name</string>
     <string name="text_contact_hint_address">Contact Address</string>
     <string name="text_create">Create</string>
     <string name="text_creating_transaction">Creating Transaction...</string>
     <string name="text_ip_address">127.0.0.1:11181</string>
     <string name="text_loading_wallet">Loading Wallet...</string>
-    <string name="text_new_address">Choose a new address index</string>
-    <string name="text_open_a_wallet_to_begin">Open a wallet to begin!</string>
-    <string name="text_password">Password</string>
-    <string name="text_password_description">This password is used to secure your wallet only on this
+    <string name="text_new_address">Address index</string>
+    <string name="text_open_a_wallet_to_begin">Open the wallet menu to begin!</string>
+    <string name="text_pin">Phone PIN</string>
+    <string name="text_pin_description">This PIN is used to secure your wallet only on this
         device.</string>
     <string name="text_recipient_address">Recipient Address</string>
     <string name="text_restore_height">Restore Height</string>
     <string name="text_secret_view_key">Secret View Key</string>
     <string name="text_secret_spend_key">Secret Spend Key</string>
-    <string name="text_seed_description">Every aeon wallet has a unique and secret seed
+    <string name="text_seed_description">Every Aeon wallet has a unique and secret seed
         phrase.</string>
     <string name="text_seed_here">YOUR SEED HERE</string>
     <string name="text_seed_reminder_2">After you delete your wallet or uninstall this app,
         your seed phrase can be still used to access your wallet with any other aeon wallet
         software. Copy this down.</string>
     <string name="text_seed">Mnemonic Seed</string>
-    <string name="text_transaction_aeon"> aeon.</string>
-    <string name="text_transaction_aeon_to"> aeon to </string>
+    <string name="text_transaction_aeon"> coins.</string>
+    <string name="text_transaction_aeon_to"> coins to </string>
     <string name="text_transaction_for_a_fee_of"> for a fee of </string>
     <string name="text_transaction_you_are_sending">You are sending </string>
+    <string name="text_requires_payment_id">Payment ID</string>
+    <string name="toast_wallet_found">Loading saved wallet...</string>
+    <string name="toast_passwords_do_not_match">PINs do not match.</string>
+    <string name="toast_wallet_loaded">Wallet loaded.</string>
+    <string name="toast_transaction_submitted">Transaction submitted.</string>
+    <string name="toast_wrong_password">Wrong PIN.</string>
+    <string name="toast_invalid_address">Invalid address format.</string>
+    <string name="toast_wallet_destroyed">Wallet destroyed.</string>
+    <string name="toast_secret_info_available_above">Secret wallet information is
+        visible in the table above.</string>
+
+    <string-array name="indices">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+    </string-array>
 </resources>

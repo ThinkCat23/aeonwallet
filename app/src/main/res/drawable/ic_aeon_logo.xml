@@ -5,17 +5,17 @@
     android:viewportHeight="700">
   <path
       android:pathData="M492.2,403.6L492.2,403.6A319.422,152.89 109.178,0 0,452.727 51.68L452.727,51.68A319.422,152.89 109.178,0 0,203.389 303.148L203.389,303.148A319.422,152.89 109.178,0 0,242.862 655.068L242.862,655.068A319.422,152.89 109.178,0 0,492.2 403.6z"
-      android:fillColor="@color/teal_200"
+      android:fillColor="@color/primaryLightColor"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M440.659,474.831L440.659,474.831A152.89,319.422 52.599,0 0,601.544 159.36L601.544,159.36A152.89,319.422 52.599,0 0,254.93 231.918L254.93,231.918A152.89,319.422 52.599,0 0,94.045 547.388L94.045,547.388A152.89,319.422 52.599,0 0,440.659 474.831z"
-      android:fillColor="@color/teal_500"
+      android:fillColor="@color/primaryColor"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M330.567,201.458L330.567,201.458A152.89,319.422 83.53,0 1,665.182 317.382L665.182,317.382A152.89,319.422 83.53,0 1,365.022 505.291L365.022,505.291A152.89,319.422 83.53,0 1,30.407 389.367L30.407,389.367A152.89,319.422 83.53,0 1,330.567 201.458z"
-      android:fillColor="@color/teal_700"
+      android:fillColor="@color/primaryDarkColor"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path

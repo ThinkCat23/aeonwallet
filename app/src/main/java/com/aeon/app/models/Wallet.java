@@ -29,7 +29,7 @@ public class Wallet {
     public BigDecimal balance = new BigDecimal(0);
     public BigDecimal unlockedBalance = new BigDecimal(0);
     public int index = 0;
-    public int restoreHeight = 0;
+    public long restoreHeight = 0;
     public String name;
     public String path;
     public String password;
@@ -41,6 +41,8 @@ public class Wallet {
     public String publicViewKey;
     public String secretSpendKey;
     public String secretViewKey;
+    public long height;
+    public long heightEstimate;
     public ConnectionStatus connectionStatus;
     public Status status;
     public Node node;
@@ -74,7 +76,7 @@ public class Wallet {
         this.password = password;
         this.language = language;
     }
-    public Wallet(String path, String password, String language, String seed, int restoreHeight){
+    public Wallet(String path, String password, String language, String seed, long restoreHeight){
         Log.v(TAG, "Wallet");
         isExists = false;
         isSynchronized = false;
@@ -89,7 +91,7 @@ public class Wallet {
         this.language = language;
     }
     public Wallet(String path, String password, String language, String account,
-                  String view, String spend, int restoreHeight) {
+                  String view, String spend, long restoreHeight) {
         Log.v(TAG, "Wallet");
         isExists = false;
         isSynchronized = false;
@@ -114,9 +116,9 @@ public class Wallet {
         if(isExistsJNI(path)){
             handle = openWalletJNI(path, password);
         } else if( this.seed != null ){
-            handle = createFromSeedJNI(path, password, seed,restoreHeight);
+            handle = createFromSeedJNI(path, password, seed, restoreHeight);
         } else if(this.secretViewKey != null){
-            handle = createFromKeysJNI(path, password, account, secretViewKey,secretSpendKey,restoreHeight);
+            handle = createFromKeysJNI(path, password, account, secretViewKey,secretSpendKey, restoreHeight);
         } else {
             handle = createJNI(path, password, language);
         }
@@ -136,9 +138,9 @@ public class Wallet {
         Log.v(TAG, "createTransaction");
         BigDecimal atomicBalance = new BigDecimal(getBalanceJNI(0));
         if(Math.abs(tx.amount-atomicBalance.longValue())<1){
-            return createSweepAllJNI(tx.recipient,"",3,1);
+            return createSweepAllJNI(tx.recipient,tx.paymentID,3,0);
         } else {
-            return createTransactionJNI(tx.recipient, "", tx.amount, 3, 0);
+            return createTransactionJNI(tx.recipient, tx.paymentID, tx.amount, 3, 0);
         }
     }
     public void disposeTransaction(TransactionPending pendingTransaction){
@@ -157,21 +159,28 @@ public class Wallet {
         address = getAddressJNI(0,index);
         balance = new BigDecimal(getBalanceJNI(0)).movePointLeft(12);
         unlockedBalance = new BigDecimal(getUnlockedBalanceJNI(0)).movePointLeft(12);
-        transactionHistory.getCount();
-        if(transactionHistory.count > transactions.size()) {
-            storeJNI("");
+        if(isSynchronized) {
+            transactionHistory.getCount();
+            if (transactionHistory.count > transactions.size()) {
+                storeJNI("");
+            }
         }
         connectionStatus = ConnectionStatus.values()[getConnectionStatusJNI()];
         if(connectionStatus == ConnectionStatus.Connected) {
             startRefreshJNI();
-            transactionHistory.refresh();
-            transactions.clear();
-            while (transactionHistory.count > transactions.size()) {
-                transactions.add(transactionHistory.getTransaction(transactions.size()));
+            if(isSynchronized) {
+                transactionHistory.refresh();
+                transactions.clear();
+                while (transactionHistory.count > transactions.size()) {
+                    transactions.add(transactionHistory.getTransaction(transactions.size()));
+                }
             }
             node.height = getDaemonBlockChainHeightJNI();
             node.target = getDaemonBlockChainTargetHeightJNI();
+            height = getBlockChainHeightJNI();
+            heightEstimate = getBlockChainHeightEstimateJNI();
             node.version = getDaemonVersionJNI();
+            restoreHeight = getRefreshFromBlockHeightJNI();
         }
     }
     public void setNode(Node node) {
@@ -186,8 +195,8 @@ public class Wallet {
     }
     private native long createTransactionJNI(String dst_address, String payment_id, long amount, int ring_size, int priority);
     private native long createJNI(String path, String password, String language);
-    private native long createFromSeedJNI(String path, String password, String seed, int restoreHeight);
-    private native long createFromKeysJNI(String path, String password, String address,String view, String spend, int restoreHeight);
+    private native long createFromSeedJNI(String path, String password, String seed, long restoreHeight);
+    private native long createFromKeysJNI(String path, String password, String address,String view, String spend, long restoreHeight);
     private native long createSweepAllJNI(String dst_address, String payment_id, int ring_size, int priority);
     private native void disposeTransactionJNI(TransactionPending pendingTransaction);
     private native boolean initJNI(String daemon_address, long upper_transaction_size_limit, String daemon_username, String daemon_password);
@@ -195,18 +204,21 @@ public class Wallet {
     private native boolean isSynchronizedJNI();
     private native String getAddressJNI(int accountIndex, int addressIndex);
     private native long getBalanceJNI(int accountIndex);
-    private native long getUnlockedBalanceJNI(int accountIndex);
+    private native long getBlockChainHeightJNI();
+    private native long getBlockChainHeightEstimateJNI();
     private native int getConnectionStatusJNI();
     private native long getDaemonBlockChainHeightJNI();
     private native long getDaemonBlockChainTargetHeightJNI();
     private native int getDaemonVersionJNI();
     private native String getPublicSpendKeyJNI();
     private native String getPublicViewKeyJNI();
+    private native long getRefreshFromBlockHeightJNI();
     private native String getSecretSpendKeyJNI();
     private native String getSecretViewKeyJNI();
     private native String getSeedJNI();
     private native int getStatusJNI();
     private native long getTransactionHistoryJNI();
+    private native long getUnlockedBalanceJNI(int accountIndex);
     private native long openWalletJNI(String path,String password);
     private native void setDaemonAddressJNI( String daemon_address);
     private native void startRefreshJNI();

@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#5fbcd3</color>
-    <color name="teal_500">#2c89a0</color>
-    <color name="teal_700">#164450</color>
-    <color name="orange_200">#ffffbb33</color>
-    <color name="blue_200">#80d8ff</color>
-    <color name="blue_500">#2196f3</color>
-    <color name="blue_700">#1565c0</color>
+    <color name="primaryColor">#00838f</color>
+    <color name="primaryLightColor">#4fb3bf</color>
+    <color name="primaryDarkColor">#005662</color>
+    <color name="secondaryColor">#5d4037</color>
+    <color name="secondaryLightColor">#8b6b61</color>
+    <color name="secondaryDarkColor">#321911</color>
+    <color name="primaryTextColor">#ffffff</color>
+    <color name="secondaryTextColor">#ffffff</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#9e9e9e</color>
@@ -17,9 +15,5 @@
     <color name="light_gray">#e0e0e0</color>
     <color name="lighter_gray">#FAFAFA</color>
     <color name="transparent">#00000000</color>
-    <color name="light_blue_600">#FF039BE5</color>
-    <color name="light_blue_900">#FF01579B</color>
-    <color name="light_blue_A200">#FF40C4FF</color>
-    <color name="light_blue_A400">#FF00B0FF</color>
     <color name="black_overlay">#66000000</color>
 </resources>

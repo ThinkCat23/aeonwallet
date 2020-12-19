@@ -17,6 +17,8 @@ limitations under the License.
 */
 import android.util.Log;
 
+import com.aeon.app.BackgroundThread;
+
 import java.math.BigDecimal;
 
 public class TransactionInfo {
@@ -33,6 +35,7 @@ public class TransactionInfo {
     public long height = 0 ;
     public long confirmations= 0;
     public long unlockTime = 0;
+    public long timestamp = 0;
     public String hash = "";
     public String paymentId= "";
 
@@ -48,16 +51,19 @@ public class TransactionInfo {
 
     public void refresh(){
         Log.v(TAG, "refresh >> "+handle);
-        getDirection();
-        getHash();
-        getAmount();
-        getHeight();
-        isPending();
-        isFailed();
-        getFee();
-        getConfirmations();
-        getUnlockTime();
-        getPaymentId();
+        if(this.confirmations<10) {
+            getDirection();
+            getHash();
+            getAmount();
+            getHeight();
+            isPending();
+            isFailed();
+            getFee();
+            getConfirmations();
+            getUnlockTime();
+            getPaymentId();
+            getTimestamp();
+        }
     }
     public Direction getDirection(){
         Log.v(TAG, "getDirection");
@@ -90,6 +96,9 @@ public class TransactionInfo {
     public long getHeight(){
         Log.v(TAG, "getHeight");
         this.height=getHeightJNI();
+        if(this.height==0){
+            this.height = BackgroundThread.height+1;
+        }
         return height;
     }
     public long getConfirmations(){
@@ -116,6 +125,11 @@ public class TransactionInfo {
         return paymentId;
 
     }
+    public long getTimestamp() {
+        Log.v(TAG, "getPaymentId");
+        this.timestamp=getTimestampJNI();
+        return timestamp;
+    }
     private native int getDirectionJNI();
     private native boolean isPendingJNI();
     private native boolean isFailedJNI();
@@ -126,4 +140,5 @@ public class TransactionInfo {
     private native long getUnlockTimeJNI();
     private native String getHashJNI() ;
     private native String getPaymentIdJNI() ;
+    private native int getTimestampJNI();
 }

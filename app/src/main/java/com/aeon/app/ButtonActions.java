@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -34,9 +35,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aeon.app.models.Node;
 import com.aeon.app.ui.contact.ContactContent;
+import com.aeon.app.ui.node.NodeContent;
 import com.aeon.app.ui.transfer.TransferFragment;
 import com.aeon.app.ui.wallet.WalletContent;
 import com.aeon.app.ui.wallet.WalletFragment;
+import com.aeon.app.util.Base58;
 import com.aeon.app.util.SeedWords;
 import com.aeon.app.util.SpaceTokenizer;
 
@@ -76,9 +79,12 @@ public class ButtonActions extends AppCompatActivity {
                         thread = new BackgroundThread();
                         thread.start();
                         goToNewWalletFragment(v);
+
                         WalletContent.clearItems();
-                        WalletContent.addItem(new WalletContent.Item("", getResources().getString(R.string.text_loading_wallet)));
-                        BackgroundThread.queueWallet(getFilesDir().getAbsolutePath() + "/wallet" + System.currentTimeMillis());
+                        WalletContent.addItem(new WalletContent.Item(getResources().getString(R.string.text_loading_wallet),"" ));
+                        String path = getFilesDir().getAbsolutePath() + "/" + System.currentTimeMillis();
+                        BackgroundThread.queueWallet(path);
+                        setPreference("path",path);
                         View walletFragmentLayout = findViewById(R.id.layout_wallet);
                         WalletFragment.openWalletView(walletFragmentLayout);
                         ConstraintLayout layout = findViewById(R.id.layout_seed_input);
@@ -86,6 +92,8 @@ public class ButtonActions extends AppCompatActivity {
                         layout = findViewById(R.id.layout_keys_input);
                         layout.setVisibility(View.GONE);
                     } else {
+                        Toast toast = Toast.makeText(getApplicationContext(), MainActivity.getString("toast_passwords_do_not_match"), Toast.LENGTH_SHORT);
+                        toast.show();
                         WalletFragment.closeWalletView(walletFragmentLayout);
                     }
                     hideKeyboard();
@@ -104,9 +112,9 @@ public class ButtonActions extends AppCompatActivity {
         ConstraintLayout seedLayout = findViewById(R.id.layout_seed_input);
         MultiAutoCompleteTextView textView = seedLayout.findViewById(R.id.text_seed_input);
         EditText editText = seedLayout.findViewById(R.id.text_restore_height);
-        if(!editText.getText().toString().equals("") && ! textView.getText().toString().equals("")) {
-            String seed = textView.getText().toString();
-            int restoreHeight = Integer.parseInt(editText.getText().toString());
+        if(!editText.getText().toString().equals("") && !textView.getText().toString().equals("")) {
+            String seed = textView.getText().toString().trim();
+            long restoreHeight = Long.parseLong(editText.getText().toString());
             if (thread == null || !thread.isRunning) {
                 seedLayout.setVisibility(View.GONE);
                 TextView passwordInfo = findViewById(R.id.text_wallet_password_info);
@@ -130,15 +138,21 @@ public class ButtonActions extends AppCompatActivity {
                             thread = new BackgroundThread();
                             thread.start();
                             WalletContent.clearItems();
-                            WalletContent.addItem(new WalletContent.Item("", getResources().getString(R.string.text_loading_wallet)));
-                            BackgroundThread.queueWallet(getFilesDir().getAbsolutePath() + "/wallet" + System.currentTimeMillis(), seed, restoreHeight);
+                            WalletContent.addItem(new WalletContent.Item(getResources().getString(R.string.text_loading_wallet),"" ));
+                            String path = getFilesDir().getAbsolutePath() + "/" + System.currentTimeMillis();
+                            BackgroundThread.queueWallet(path, seed, restoreHeight);
+                            setPreference("path",path);
                             View walletFragmentLayout = (ConstraintLayout) findViewById(R.id.layout_wallet);
                             WalletFragment.openWalletView(walletFragmentLayout);
                             ConstraintLayout layout = findViewById(R.id.layout_seed_input);
                             layout.setVisibility(View.GONE);
                             layout = findViewById(R.id.layout_keys_input);
                             layout.setVisibility(View.GONE);
+                            Toast toast = Toast.makeText(getApplicationContext(),MainActivity.getString("toast_wallet_loaded"), Toast.LENGTH_SHORT);
+                            toast.show();
                         } else {
+                            Toast toast = Toast.makeText(getApplicationContext(),MainActivity.getString("toast_passwords_do_not_match"), Toast.LENGTH_SHORT);
+                            toast.show();
                             WalletFragment.closeWalletView(walletFragmentLayout);
                         }
                         hideKeyboard();
@@ -167,7 +181,7 @@ public class ButtonActions extends AppCompatActivity {
             String account = account_text.getText().toString();
             String view = view_text.getText().toString();
             String spend = spend_text.getText().toString();
-            int restoreHeight = Integer.parseInt(restore_height_text.getText().toString());
+            long restoreHeight = Long.parseLong(restore_height_text.getText().toString());
             if (thread == null || !thread.isRunning) {
                 layout.setVisibility(View.GONE);
                 TextView passwordInfo = findViewById(R.id.text_wallet_password_info);
@@ -191,15 +205,21 @@ public class ButtonActions extends AppCompatActivity {
                             thread = new BackgroundThread();
                             thread.start();
                             WalletContent.clearItems();
-                            WalletContent.addItem(new WalletContent.Item("", getResources().getString(R.string.text_loading_wallet)));
-                            BackgroundThread.queueWallet(getFilesDir().getAbsolutePath() + "/wallet" + System.currentTimeMillis(), account,view,spend, restoreHeight);
+                            WalletContent.addItem(new WalletContent.Item(getResources().getString(R.string.text_loading_wallet),"" ));
+                            String path = getFilesDir().getAbsolutePath() + "/" + System.currentTimeMillis();
+                            BackgroundThread.queueWallet(path, account,view,spend, restoreHeight);
+                            setPreference("path",path);
                             View walletFragmentLayout = (ConstraintLayout) findViewById(R.id.layout_wallet);
                             WalletFragment.openWalletView(walletFragmentLayout);
                             ConstraintLayout layout = findViewById(R.id.layout_seed_input);
                             layout.setVisibility(View.GONE);
                             layout = findViewById(R.id.layout_keys_input);
                             layout.setVisibility(View.GONE);
+                            Toast toast = Toast.makeText(getApplicationContext(),MainActivity.getString("toast_wallet_loaded"), Toast.LENGTH_SHORT);
+                            toast.show();
                         } else {
+                            Toast toast = Toast.makeText(getApplicationContext(),MainActivity.getString("toast_passwords_do_not_match"), Toast.LENGTH_SHORT);
+                            toast.show();
                             WalletFragment.closeWalletView(walletFragmentLayout);
                         }
                         hideKeyboard();
@@ -213,29 +233,6 @@ public class ButtonActions extends AppCompatActivity {
                 });
             }
         }
-    }
-    public void setAddressIndex(View v) {
-        RecyclerView rv = findViewById(R.id.rv_wallet_info_list);
-        NumberPicker index = findViewById(R.id.numberpicker_main_picker);
-        TextView help = findViewById(R.id.text_address_index_help);
-        Button ok = findViewById(R.id.button_address_ok);
-        index.setVisibility(View.VISIBLE);
-        index.setMaxValue(500);
-        index.setMinValue(0);
-        index.setWrapSelectorWheel(false);
-        ok.setVisibility(View.VISIBLE);
-        help.setVisibility(View.VISIBLE);
-        rv.setVisibility(View.GONE);
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BackgroundThread.setAddressIndex(index.getValue());
-                index.setVisibility(View.GONE);
-                ok.setVisibility(View.GONE);
-                help.setVisibility(View.GONE);
-                rv.setVisibility(View.VISIBLE);
-            }
-        });
     }
 
 
@@ -267,13 +264,30 @@ public class ButtonActions extends AppCompatActivity {
         showKeyboard();
     }
     public void createTransaction(View v) {
-        View transferFragmentLayout = (ConstraintLayout) findViewById(R.id.layout_transfer);
-        EditText recipientInfo = (EditText)transferFragmentLayout.findViewById(R.id.transfer_recipient_info);
-        EditText amountInfo = (EditText)transferFragmentLayout.findViewById(R.id.transfer_amount_info);
-        BackgroundThread.queueTransaction(
-                recipientInfo.getText().toString(),(new BigDecimal(amountInfo.getText().toString()).movePointRight(12).longValue())
-        );
-        goToTransactionPendingFragment(v);
+        EditText recipientInfo = (EditText)findViewById(R.id.transfer_recipient_info);
+        EditText amountInfo = (EditText)findViewById(R.id.transfer_amount_info);
+        EditText paymentID = (EditText)findViewById(R.id.text_payment_id);
+        if(!recipientInfo.getText().toString().equals("") &&
+                !amountInfo.getText().toString().equals("") ) {
+            if( Base58.isValidAddress(recipientInfo.getText().toString())) {
+                if (paymentID.getVisibility() == View.VISIBLE) {
+                    BackgroundThread.queueTransaction(
+                            recipientInfo.getText().toString(),
+                            (new BigDecimal(amountInfo.getText().toString()).movePointRight(12).longValue()),
+                            paymentID.getText().toString()
+                    );
+                } else {
+                    BackgroundThread.queueTransaction(
+                            recipientInfo.getText().toString(),
+                            (new BigDecimal(amountInfo.getText().toString()).movePointRight(12).longValue())
+                    );
+                }
+                goToTransactionPendingFragment(v);
+            } else {
+                Toast toast = Toast.makeText(getApplicationContext(),MainActivity.getString("toast_invalid_address"), Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
     }
 
     public void confirmTransaction(View v) {
@@ -281,6 +295,11 @@ public class ButtonActions extends AppCompatActivity {
         Button confirm = findViewById(R.id.button_confirm_send);
         if(password.getText().toString().equals(getPassword())){
             BackgroundThread.confirmTransaction();
+            Toast toast = Toast.makeText(getApplicationContext(),MainActivity.getString("toast_transaction_submitted"), Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            Toast toast = Toast.makeText(getApplicationContext(),MainActivity.getString("toast_wrong_password"), Toast.LENGTH_SHORT);
+            toast.show();
         }
         password.setText("");
         confirm.setVisibility(View.GONE);
@@ -302,7 +321,12 @@ public class ButtonActions extends AppCompatActivity {
                 if(password.getText().toString().equals(getPassword())){
                     WalletFragment.closeWalletView(walletFragmentLayout);
                     thread.interrupt();
+                    clearPath();
+                    Toast toast = Toast.makeText(getApplicationContext(),MainActivity.getString("toast_wallet_destroyed"), Toast.LENGTH_SHORT);
+                    toast.show();
                 } else {
+                    Toast toast = Toast.makeText(getApplicationContext(),MainActivity.getString("toast_wrong_password"), Toast.LENGTH_SHORT);
+                    toast.show();
                     WalletFragment.openWalletView(walletFragmentLayout);
                 }
                 hideKeyboard();
@@ -329,16 +353,14 @@ public class ButtonActions extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!address.getText().toString().equals("")) {
-                    if(thread.isRunning) {
-                        thread.interrupt();
-                    }
+                    NodeContent.reset();
                     String input = address.getText().toString();
-                        String[] host = input.split(":");
-                        if (host.length > 1) {
-                            BackgroundThread.setNode(new Node(host[0], host[1]));
-                        } else {
-                            BackgroundThread.setNode(new Node(host[0]));
-                        }
+                    String[] host = input.split(":");
+                    if (host.length > 1) {
+                        BackgroundThread.setNode(new Node(host[0], host[1]));
+                    } else {
+                        BackgroundThread.setNode(new Node(host[0]));
+                    }
                     address.setEnabled(false);
                     address.setText(null);
                     address.setVisibility(View.GONE);
@@ -346,21 +368,14 @@ public class ButtonActions extends AppCompatActivity {
                     ok.setVisibility(View.GONE);
                     rv.setVisibility(View.VISIBLE);
                     configure.setVisibility(View.VISIBLE);
-                    if(BackgroundThread.path!=null) {
-                        thread = new BackgroundThread();
-                        thread.start();
-                        BackgroundThread.queueWallet(BackgroundThread.path);
-                    }
                 }
             }
         });
         random.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(thread.isRunning) {
-                    thread.interrupt();
-                }
-                BackgroundThread.setNode(Node.pickRandom());
+                NodeContent.reset();
+                BackgroundThread.setNode();
                 address.setEnabled(false);
                 address.setText(null);
                 address.setVisibility(View.GONE);
@@ -368,11 +383,6 @@ public class ButtonActions extends AppCompatActivity {
                 ok.setVisibility(View.GONE);
                 rv.setVisibility(View.VISIBLE);
                 configure.setVisibility(View.VISIBLE);
-                if(BackgroundThread.path!=null) {
-                    thread = new BackgroundThread();
-                    thread.start();
-                    BackgroundThread.queueWallet(BackgroundThread.path);
-                }
             }
         });
     }
@@ -388,13 +398,22 @@ public class ButtonActions extends AppCompatActivity {
         address.setVisibility(View.VISIBLE);
         add.setVisibility(View.VISIBLE);
         rv.setVisibility(View.GONE);
+        label.requestFocus();
+        showKeyboard();
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!label.getText().toString().equals("") && !address.getText().toString().equals("")) {
-                    ContactContent.addItem(new ContactContent.Contact(
-                            label.getText().toString(),
-                            address.getText().toString()));
+                if(!label.getText().toString().equals("") &&
+                        !address.getText().toString().equals("")) {
+                        if(Base58.isValidAddress(address.getText().toString())) {
+                            setPreference(address.getText().toString(), label.getText().toString());
+                            ContactContent.addItem(new ContactContent.Contact(
+                                    label.getText().toString(),
+                                    address.getText().toString()));
+                        } else {
+                            Toast toast = Toast.makeText(getApplicationContext(), MainActivity.getString("toast_invalid_address"), Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
                 }
                 label.setEnabled(false);
                 address.setEnabled(false);
@@ -422,7 +441,11 @@ public class ButtonActions extends AppCompatActivity {
                 if(password.getText().toString().equals(getPassword())){
                     WalletFragment.openWalletView(walletFragmentLayout);
                     WalletFragment.walletAdapter.showSecretInfo();
+                    Toast toast = Toast.makeText(getApplicationContext(),MainActivity.getString("toast_secret_info_available_above"), Toast.LENGTH_SHORT);
+                    toast.show();
                 } else {
+                    Toast toast = Toast.makeText(getApplicationContext(),MainActivity.getString("toast_wrong_password"), Toast.LENGTH_SHORT);
+                    toast.show();
                     WalletFragment.openWalletView(walletFragmentLayout);
                 }
                 hideKeyboard();
@@ -432,11 +455,28 @@ public class ButtonActions extends AppCompatActivity {
             }
         });
     }
+
+    public void clearPath(){
+        setPreference("path",null);
+    }
     public void setPassword(String password){
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("password",password);
         ButtonActions.password = password;
+        setPreference("password",password);
+    }
+    public void setPreference(String key,String value){
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(key,value);
+        editor.apply();
+    }
+    public static void setPreference(String key,String value,SharedPreferences sharedPref){
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(key,value);
+        editor.apply();
+    }
+    public static void deletePreference(String key,SharedPreferences sharedPref){
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.remove(key);
         editor.apply();
     }
     public static String getPassword(){
@@ -523,6 +563,26 @@ public class ButtonActions extends AppCompatActivity {
                 R.id.nav_host_fragment
         ).navigate(
                 R.id.navigation_transaction_pending,
+                null,
+                navOptions
+        );
+    }
+    public void goToSendFragment(View view){
+        Navigation.findNavController(
+                this,
+                R.id.nav_host_fragment
+        ).navigate(
+                R.id.navigation_send,
+                null,
+                navOptions
+        );
+    }
+    public void goToReceiveFragment(View view){
+        Navigation.findNavController(
+                this,
+                R.id.nav_host_fragment
+        ).navigate(
+                R.id.navigation_receive,
                 null,
                 navOptions
         );

@@ -161,6 +161,14 @@ Java_com_aeon_app_models_TransactionInfo_getPaymentIdJNI(
     Aeon::TransactionInfo *transactionInfo = getHandle<Aeon::TransactionInfo>(env,  instance);
     return env->NewStringUTF(transactionInfo->paymentId().c_str());
 }
+JNIEXPORT jlong JNICALL
+Java_com_aeon_app_models_TransactionInfo_getTimestampJNI(
+        JNIEnv *env,
+        jobject instance
+) {
+    Aeon::TransactionInfo *transactionInfo = getHandle<Aeon::TransactionInfo>(env,  instance);
+    return transactionInfo->timestamp();
+}
 
 #ifdef __cplusplus
 }

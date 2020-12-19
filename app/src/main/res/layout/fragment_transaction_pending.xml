@@ -25,7 +25,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 
         <EditText
             android:id="@+id/text_transfer_password"
@@ -35,8 +35,8 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="32dp"
             android:ems="10"
-            android:hint="@string/text_password"
-            android:inputType="textPassword"
+            android:hint="@string/text_pin"
+            android:inputType="numberPassword"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -51,11 +51,20 @@
             android:onClick="confirmTransaction"
             android:text="@string/button_confirm"
             android:textAlignment="viewStart"
-            android:theme="@style/Button.On"
+            android:padding="16dp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/text_transfer_password"
             app:layout_constraintStart_toStartOf="@+id/text_transfer_password"
             app:layout_constraintTop_toBottomOf="@+id/text_transfer_password" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

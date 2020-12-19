@@ -1,62 +1,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Aeonwallet" parent="Theme.MaterialComponents.DayNight">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/lighter_gray</item>
-        <item name="colorPrimaryVariant">@color/teal_500</item>
-        <item name="colorOnPrimary">@color/light_gray</item>
+        <item name="colorPrimary">@color/primaryLightColor</item>
+        <item name="colorPrimaryVariant">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorOnPrimary">@color/primaryTextColor</item>
+        <item name="colorSecondary">@color/secondaryColor</item>
+        <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
+        <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="colorSecondary">@color/teal_500</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/light_gray</item>
-        <item name="android:windowBackground">@color/lighter_gray</item>
-        <item name="colorOnBackground">@color/light_gray</item>
-        <item name="android:textColorHint">@color/gray</item>
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="colorSurface">@color/transparent</item>
+        <item name="actionBarStyle">@style/ThemeActionBar</item>
+        <item name="android:actionBarStyle">@style/ThemeActionBar</item>
     </style>
-
-    <style name="Button.On" parent="Theme.MaterialComponents">
-        <item name="colorPrimary">@color/teal_500</item>
-        <item name="colorSecondary">@color/teal_500</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorOnSecondary">@color/white</item>
-    </style>
-    <style name="Button.Top" parent="Theme.MaterialComponents">
-        <item name="colorPrimary">@color/teal_500</item>
-        <item name="colorSecondary">@color/teal_500</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <item name="colorOnSecondary">@color/black</item>
-    </style>
-    <style name="Button.Off" parent="Theme.MaterialComponents">
-        <item name="colorPrimary">@color/light_gray</item>
-        <item name="colorSecondary">@color/light_gray</item>
-        <item name="colorOnSecondary">@color/gray</item>
-    </style>
-
-    <style name="Button.Neutral" parent="Theme.MaterialComponents">
-        <item name="colorPrimary">@color/transparent</item>
-        <item name="colorSecondary">@color/transparent</item>
-        <item name="colorOnPrimary">@color/black</item>
-    </style>
-
-    <style name="Button.Warning" parent="Theme.MaterialComponents">
-        <item name="colorPrimary">@color/design_default_color_error</item>
-        <item name="colorSecondary">@color/design_default_color_error</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorOnSecondary">@color/white</item>
-    </style>
-
-    <style name="Button_Selected" parent="Theme.MaterialComponents">
-        <item name="android:textColor">@color/teal_500</item>
-    </style>
-
-    <style name="Button_Unselected" parent="Theme.MaterialComponents">
-        <item name="android:textColor">@color/black</item>
-    </style>
-
-    <style name="ThemeOverlay.Aeonwallet.FullscreenContainer" parent="">
-        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
-        <item name="fullscreenTextColor">@color/light_blue_A200</item>
+    <style name="ThemeActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="android:background">@color/transparent</item>
+        <item name="background">@color/transparent</item>
     </style>
 </resources>

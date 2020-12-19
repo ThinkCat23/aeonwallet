@@ -17,45 +17,58 @@ limitations under the License.
 */
 import android.content.Context;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aeon.app.BackgroundThread;
 import com.aeon.app.MainActivity;
 import com.aeon.app.R;
+import com.aeon.app.ui.blog.BlogAdapter;
+import com.aeon.app.ui.blog.BlogContent;
 import com.aeon.app.ui.wallet.WalletAdapter;
 import com.aeon.app.ui.wallet.WalletContent;
 
 public class TransferFragment extends Fragment {
-    public static WalletAdapter walletAdapter;
+    public static BlogAdapter blogAdapter;
     public static Group transferGroup;
     public static Group onboardGroup;
-    private EditText recipient;
+    public static TextView text_balance;
+    public static TextView text_available;
+    public static TextView text_node;
+    public static String available= "";
+    public static String balance= "";
+    public static String height= "";
+    public static String ip= "";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_transfer, container, false);
         Context context = view.getContext();
-        RecyclerView rv = view.findViewById(R.id.rv_wallet_info_list);
-        rv.setLayoutManager(new GridLayoutManager(context, 1));
-        walletAdapter = new WalletAdapter(WalletContent.ITEMS);
-        walletAdapter.showSummary(true);
-        rv.setAdapter(walletAdapter);
+        RecyclerView rv = view.findViewById(R.id.rv_blog_list);
+        rv.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        blogAdapter = new BlogAdapter(BlogContent.ITEMS,context);
+        rv.setAdapter(blogAdapter);
         transferGroup = view.findViewById(R.id.group_transfer);
         onboardGroup = view.findViewById(R.id.group_onboard);
-        recipient = (EditText)view.findViewById(R.id.transfer_recipient_info);
+        text_available = view.findViewById(R.id.text_available);
+        text_balance = view.findViewById(R.id.text_balance);
+        text_node = view.findViewById(R.id.text_node);
         return view;
     }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -63,47 +76,36 @@ public class TransferFragment extends Fragment {
         if(BackgroundThread.isManaging){
             transferGroup.setVisibility(View.VISIBLE);
             onboardGroup.setVisibility(View.GONE);
-            recipient.requestFocus();
-            InputMethodManager imm =
-                    (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(getActivity().getCurrentFocus(), 0);
         } else {
             transferGroup.setVisibility(View.GONE);
             onboardGroup.setVisibility(View.VISIBLE);
         }
-        MainActivity.button_transfer.setTextAppearance(R.style.Button_Selected);
-        MainActivity.button_contacts.setTextAppearance(R.style.Button_Unselected);
-        MainActivity.button_recents.setTextAppearance(R.style.Button_Unselected);
-        MainActivity.image_transfer.setVisibility(View.VISIBLE);
-        MainActivity.image_contacts.setVisibility(View.GONE);
-        MainActivity.image_recents.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if(BackgroundThread.isManaging) {
-            InputMethodManager imm =
-                    (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            try {
-                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
-            } catch (NullPointerException e){
-                e.printStackTrace();
+        if(text_available!=null) {
+            text_available.setText(available);
+            text_balance.setText(balance);
+        }
+        if(text_node!=null) {
+            if(!height.equals("")) {
+                text_node.setText(MainActivity.getString("text_connected_to")+" "+ip + " @ " + height);
+            } else{
+                text_node.setText(MainActivity.getString("text_connecting_to_aeon_network"));
             }
         }
     }
 
-    public static void hideUI(View view){
-        transferGroup.setVisibility(View.GONE);
-        onboardGroup.setVisibility(View.GONE);
+    public static void updateWalletInfo(String available2, String balance2){
+        available= available2;
+        balance= balance2;
+        if(text_available!=null) {
+            text_available.setText(available);
+            text_balance.setText(balance);
+        }
     }
-    public static void showUI(View view){
-        if(BackgroundThread.isManaging){
-            transferGroup.setVisibility(View.VISIBLE);
-            onboardGroup.setVisibility(View.GONE);
-        } else {
-            transferGroup.setVisibility(View.GONE);
-            onboardGroup.setVisibility(View.VISIBLE);
+    public static void updateNodeInfo(String height2, String ip2){
+        height = height2;
+        ip = ip2;
+        if(text_node!=null) {
+            text_node.setText(MainActivity.getString("text_connected_to")+" "+ip + " @ " + height);
         }
     }
 }

@@ -31,12 +31,22 @@
         tools:layout="@layout/fragment_node" />
     <fragment
         android:id="@+id/navigation_new_wallet"
-        android:name="com.aeon.app.NewWalletFragment"
+        android:name="com.aeon.app.ui.wallet.WalletNewFragment"
         android:label="@string/title_new_wallet"
         tools:layout="@layout/fragment_new_wallet" />
     <fragment
         android:id="@+id/navigation_transaction_pending"
-        android:name="com.aeon.app.TransactionPendingFragment"
+        android:name="com.aeon.app.ui.transfer.TransferPendingFragment"
         android:label="@string/title_transaction_pending"
         tools:layout="@layout/fragment_transaction_pending" />
+    <fragment
+        android:id="@+id/navigation_send"
+        android:name="com.aeon.app.ui.transfer.SendFragment"
+        android:label="@string/title_send"
+        tools:layout="@layout/fragment_send" />
+    <fragment
+        android:id="@+id/navigation_receive"
+        android:name="com.aeon.app.ui.transfer.ReceiveFragment"
+        android:label="@string/title_receive"
+        tools:layout="@layout/fragment_receive" />
 </navigation>

@@ -47,6 +47,12 @@ public class NodeContent {
         ITEM_MAP.clear();
         notifyDataSetChanged(NodeFragment.nodeAdapter);
     }
+    public static void reset() {
+        for(String key : ITEM_MAP.keySet()) {
+            ITEMS.set(ITEM_MAP.get(key),new Item(key,"..."));
+        }
+        notifyDataSetChanged(NodeFragment.nodeAdapter);
+    }
 
     public static void updateItem(String key, String value) {
         ITEMS.set(ITEM_MAP.get(key),new Item(key,value));

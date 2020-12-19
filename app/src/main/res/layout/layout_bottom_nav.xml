@@ -4,79 +4,52 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_node_button"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <Button
         android:id="@+id/button_recents"
-        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="goToRecentFragment"
         android:text="@string/title_recents"
         android:textAllCaps="false"
-        android:theme="@style/Button.Neutral"
         app:layout_constraintBottom_toBottomOf="@+id/button_transfer"
         app:layout_constraintEnd_toStartOf="@+id/button_contacts"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/button_transfer"
         app:layout_constraintTop_toTopOf="@+id/button_transfer"
         app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/button_transfer"
-        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="goToTransferFragment"
         android:text="@string/title_transfer"
         android:textAllCaps="false"
-        android:theme="@style/Button.Neutral"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_recents"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button_contacts"
-        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="goToContactFragment"
         android:text="@string/title_contacts"
         android:textAllCaps="false"
         android:textIsSelectable="false"
-        android:theme="@style/Button.Neutral"
         app:layout_constraintBottom_toBottomOf="@+id/button_recents"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button_recents"
         app:layout_constraintTop_toTopOf="@+id/button_recents"
         app:layout_constraintVertical_bias="0.0" />
-
-    <ImageView
-        android:id="@+id/image_transfer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:translationY="-12dp"
-        app:layout_constraintEnd_toEndOf="@+id/button_transfer"
-        app:layout_constraintStart_toStartOf="@+id/button_transfer"
-        app:layout_constraintTop_toBottomOf="@+id/button_transfer"
-        app:srcCompat="@drawable/dots" />
-
-    <ImageView
-        android:id="@+id/image_recents"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:translationY="-12dp"
-        app:layout_constraintEnd_toEndOf="@+id/button_recents"
-        app:layout_constraintStart_toStartOf="@+id/button_recents"
-        app:layout_constraintTop_toBottomOf="@+id/button_recents"
-        app:srcCompat="@drawable/dots" />
-
-    <ImageView
-        android:id="@+id/image_contacts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:translationY="-12dp"
-        app:layout_constraintEnd_toEndOf="@+id/button_contacts"
-        app:layout_constraintStart_toStartOf="@+id/button_contacts"
-        app:layout_constraintTop_toBottomOf="@+id/button_contacts"
-        app:srcCompat="@drawable/dots" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

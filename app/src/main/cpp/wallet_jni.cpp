@@ -109,7 +109,7 @@ Java_com_aeon_app_models_Wallet_createFromSeedJNI(
         jstring path,
         jstring password,
         jstring seed,
-        jint restoreHeight
+        jlong restoreHeight
 ) {
     const char *_path = env->GetStringUTFChars(path, nullptr);
     const char *_password = env->GetStringUTFChars(password, nullptr);
@@ -138,7 +138,7 @@ Java_com_aeon_app_models_Wallet_createFromKeysJNI(
         jstring address,
         jstring view,
         jstring spend,
-        jint restoreHeight
+        jlong restoreHeight
 ) {
     const char *_path = env->GetStringUTFChars(path, nullptr);
     const char *_password = env->GetStringUTFChars(password, nullptr);
@@ -349,7 +349,7 @@ JNIEXPORT jlong JNICALL
 Java_com_aeon_app_models_Wallet_getDaemonBlockChainHeightJNI(
         JNIEnv *env,
         jobject instance
-    ) {
+) {
     Aeon::Wallet *wallet = getHandle<Aeon::Wallet>(env, instance);
     return wallet->daemonBlockChainHeight();
 }
@@ -358,11 +358,37 @@ JNIEXPORT jlong JNICALL
 Java_com_aeon_app_models_Wallet_getDaemonBlockChainTargetHeightJNI(
         JNIEnv *env,
         jobject instance
-    ) {
+) {
     Aeon::Wallet *wallet = getHandle<Aeon::Wallet>(env, instance);
     return wallet->daemonBlockChainTargetHeight();
 }
 
+JNIEXPORT jlong JNICALL
+Java_com_aeon_app_models_Wallet_getBlockChainHeightJNI(
+        JNIEnv *env,
+        jobject instance
+) {
+    Aeon::Wallet *wallet = getHandle<Aeon::Wallet>(env, instance);
+    return wallet->blockChainHeight();
+}
+
+JNIEXPORT jlong JNICALL
+Java_com_aeon_app_models_Wallet_getBlockChainHeightEstimateJNI(
+        JNIEnv *env,
+        jobject instance
+) {
+    Aeon::Wallet *wallet = getHandle<Aeon::Wallet>(env, instance);
+    return wallet->approximateBlockChainHeight();
+}
+
+JNIEXPORT jlong JNICALL
+Java_com_aeon_app_models_Wallet_getRefreshFromBlockHeightJNI(
+        JNIEnv *env,
+        jobject instance
+) {
+    Aeon::Wallet *wallet = getHandle<Aeon::Wallet>(env, instance);
+    return wallet->getRefreshFromBlockHeight();
+}
 JNIEXPORT jboolean JNICALL
 Java_com_aeon_app_models_Wallet_isSynchronizedJNI(
         JNIEnv *env,

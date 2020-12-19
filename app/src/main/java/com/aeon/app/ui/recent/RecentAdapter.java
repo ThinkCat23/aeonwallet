@@ -45,9 +45,12 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.ViewHolder
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mDirectionView.setText(String.valueOf(holder.mItem.direction));
-        holder.mIdView.setText(String.valueOf(holder.mItem.height));
-        holder.mContentView.setText(String.valueOf(holder.mItem.amount.toPlainString()));
+        holder.mDateView.setText(String.valueOf(mValues.size() - position)+" : "+String.valueOf(holder.mItem.height)+" : "+String.valueOf(new java.util.Date((long)holder.mItem.timestamp*1000)));
+        if(holder.mItem.direction== TransactionInfo.Direction.In) {
+            holder.mContentView.setText("+ "+String.valueOf(holder.mItem.amount.toPlainString()));
+        }else {
+            holder.mContentView.setText("- "+String.valueOf(holder.mItem.amount.toPlainString()));
+        }
     }
 
     @Override
@@ -57,17 +60,15 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
         public final TextView mContentView;
-        public final TextView mDirectionView;
+        public final TextView mDateView;
         public TransactionInfo mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
+            mDateView = (TextView) view.findViewById(R.id.date);
             mContentView = (TextView) view.findViewById(R.id.name);
-            mDirectionView = (TextView) view.findViewById(R.id.direction);
         }
 
         @Override
